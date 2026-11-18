@@ -7,7 +7,6 @@
     <title>Register - Peminjaman Alat Komputer</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <style>
@@ -88,7 +87,7 @@
             color: #94a3b8;
         }
 
-        input, select {
+        input {
             width: 100%;
             padding: 13px 14px 13px 40px;
             border: 1px solid #e2e8f0;
@@ -101,23 +100,9 @@
             transition: .2s;
         }
 
-        input:focus, select:focus {
+        input:focus {
             border-color: #1765df;
             box-shadow: 0 0 0 3px #1765df15;
-        }
-
-        select {
-            cursor: pointer;
-            appearance: none;
-        }
-
-        .select-arrow {
-            position: absolute;
-            right: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-            pointer-events: none;
         }
 
         .password-toggle {
@@ -217,7 +202,10 @@
     {{-- NOTIFIKASI ERROR --}}
     @if ($errors->any())
         <div class="error-box">
-            <strong><i class="fas fa-exclamation-circle"></i> Periksa kembali data:</strong>
+            <strong>
+                <i class="fas fa-exclamation-circle"></i>
+                Periksa kembali data:
+            </strong>
 
             <ul>
                 @foreach ($errors->all() as $error)
@@ -233,30 +221,33 @@
 
         {{-- NAMA --}}
         <div class="form-group">
-            <label>Nama Lengkap</label>
+            <label for="name">Nama Lengkap</label>
 
             <div class="input-box">
                 <i class="fas fa-user"></i>
 
                 <input
                     type="text"
+                    id="name"
                     name="name"
                     value="{{ old('name') }}"
                     placeholder="Masukkan nama lengkap"
                     required
+                    autofocus
                 >
             </div>
         </div>
 
         {{-- EMAIL --}}
         <div class="form-group">
-            <label>Email</label>
+            <label for="email">Email</label>
 
             <div class="input-box">
                 <i class="fas fa-envelope"></i>
 
                 <input
                     type="email"
+                    id="email"
                     name="email"
                     value="{{ old('email') }}"
                     placeholder="Masukkan email"
@@ -267,7 +258,7 @@
 
         {{-- PASSWORD --}}
         <div class="form-group">
-            <label>Password</label>
+            <label for="password">Password</label>
 
             <div class="input-box">
                 <i class="fas fa-lock"></i>
@@ -280,7 +271,8 @@
                     required
                 >
 
-                <span class="password-toggle" onclick="togglePassword('password', 'iconPassword')">
+                <span class="password-toggle"
+                      onclick="togglePassword('password', 'iconPassword')">
                     <i class="fas fa-eye" id="iconPassword"></i>
                 </span>
             </div>
@@ -288,7 +280,7 @@
 
         {{-- KONFIRMASI PASSWORD --}}
         <div class="form-group">
-            <label>Konfirmasi Password</label>
+            <label for="password_confirmation">Konfirmasi Password</label>
 
             <div class="input-box">
                 <i class="fas fa-lock"></i>
@@ -301,38 +293,14 @@
                     required
                 >
 
-                <span class="password-toggle" onclick="togglePassword('password_confirmation', 'iconConfirm')">
+                <span class="password-toggle"
+                      onclick="togglePassword('password_confirmation', 'iconConfirm')">
                     <i class="fas fa-eye" id="iconConfirm"></i>
                 </span>
             </div>
         </div>
 
-        {{-- ROLE --}}
-        <div class="form-group">
-            <label>Daftar Sebagai</label>
-
-            <div class="input-box">
-                <i class="fas fa-users"></i>
-
-                <select name="role" required>
-                    <option value="">-- Pilih Role --</option>
-
-                    <option value="petugas"
-                        {{ old('role') == 'petugas' ? 'selected' : '' }}>
-                        Petugas
-                    </option>
-
-                    <option value="peminjam"
-                        {{ old('role') == 'peminjam' ? 'selected' : '' }}>
-                        Peminjam
-                    </option>
-                </select>
-
-                <i class="fas fa-chevron-down select-arrow"></i>
-            </div>
-        </div>
-
-        {{-- TOMBOL --}}
+        {{-- ROLE OTOMATIS PEMINJAM --}}
         <button type="submit" class="btn-register">
             <i class="fas fa-user-plus"></i>
             Daftar Sekarang

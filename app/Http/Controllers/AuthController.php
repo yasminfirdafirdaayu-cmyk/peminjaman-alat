@@ -10,6 +10,7 @@ use Illuminate\Validation\Rules\Password;
 
 class AuthController extends Controller
 {
+    // MENAMPILKAN HALAMAN LOGIN
     public function showLogin()
     {
         if (Auth::check()) {
@@ -19,6 +20,7 @@ class AuthController extends Controller
         return view('login');
     }
 
+    // PROSES LOGIN
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -39,6 +41,7 @@ class AuthController extends Controller
         return $this->redirectByRole();
     }
 
+    // MENAMPILKAN HALAMAN REGISTER
     public function showRegister()
     {
         if (Auth::check()) {
@@ -48,6 +51,7 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
+    // PROSES REGISTER KHUSUS PEMINJAM
     public function register(Request $request)
     {
         $validated = $request->validate([
@@ -58,14 +62,16 @@ class AuthController extends Controller
                 'confirmed',
                 Password::min(8),
             ],
-            'role' => 'required|in:petugas,peminjam',
         ]);
 
         User::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
+
+            // Semua pendaftaran umum otomatis menjadi peminjam.
+            // Role dari formulir tidak digunakan.
+            'role' => 'peminjam',
         ]);
 
         return redirect()
@@ -73,6 +79,7 @@ class AuthController extends Controller
             ->with('success', 'Registrasi berhasil! Silakan login.');
     }
 
+    // PENGALIHAN DASHBOARD BERDASARKAN ROLE
     private function redirectByRole()
     {
         $user = Auth::user();
@@ -104,6 +111,7 @@ class AuthController extends Controller
         return redirect()->route($routes[$role]);
     }
 
+    // LOGOUT
     public function logout(Request $request)
     {
         Auth::logout();

@@ -8,10 +8,10 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // DAFTAR USER
+    // DAFTAR SEMUA USER
     public function index()
     {
-        $users = User::all();
+        $users = User::latest()->get();
 
         return view('user.index', compact('users'));
     }
@@ -22,24 +22,25 @@ class UserController extends Controller
         return view('user.create');
     }
 
-    // SIMPAN USER
+    // SIMPAN USER BARU
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'required|email|max:255|unique:users,email',
             'password' => 'required|string|min:8',
             'role' => 'required|in:admin,petugas,peminjam',
         ]);
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => Hash::make($validated['password']),
+            'role' => $validated['role'],
         ]);
 
-        return redirect()->route('user.index')
+        return redirect()
+            ->route('user.index')
             ->with('success', 'User berhasil ditambahkan.');
     }
 
@@ -56,26 +57,27 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|email|max:255|unique:users,email,' . $id,
             'password' => 'nullable|string|min:8',
             'role' => 'required|in:admin,petugas,peminjam',
         ]);
 
         $data = [
-            'name' => $request->name,
-            'email' => $request->email,
-            'role' => $request->role,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => $validated['role'],
         ];
 
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
         }
 
         $user->update($data);
 
-        return redirect()->route('user.index')
+        return redirect()
+            ->route('user.index')
             ->with('success', 'User berhasil diperbarui.');
     }
 
@@ -84,13 +86,18 @@ class UserController extends Controller
     {
         $user = User::findOrFail($id);
 
-        if ($user->id === auth()->id()) {
-            return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
+        // Admin tidak boleh menghapus akunnya sendiri.
+        if ((int) $user->id === (int) auth()->id()) {
+            return back()->with(
+                'error',
+                'Tidak bisa menghapus akun sendiri.'
+            );
         }
 
         $user->delete();
 
-        return redirect()->route('user.index')
+        return redirect()
+            ->route('user.index')
             ->with('success', 'User berhasil dihapus.');
     }
 }
