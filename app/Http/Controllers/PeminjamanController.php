@@ -295,12 +295,10 @@ class PeminjamanController extends Controller
                     ->diffInDays($tanggalAktual);
             }
 
-            // Denda Rp10.000 per unit per hari.
-            $dendaPerHariPerUnit = 10000;
+            // Denda Rp10.000 per hari, tidak berdasarkan jumlah unit.
+            $dendaPerHari = 10000;
 
-            $denda = $hariTerlambat
-                * (int) $data->jumlah
-                * $dendaPerHariPerUnit;
+            $denda = $hariTerlambat * $dendaPerHari;    
 
             $data->update([
                 'tanggal_dikembalikan' => $tanggalAktual->toDateString(),

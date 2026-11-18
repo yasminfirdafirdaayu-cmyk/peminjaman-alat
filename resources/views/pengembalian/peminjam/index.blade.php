@@ -42,6 +42,10 @@
             border-radius: 6px;
         }
 
+        .navbar a:hover {
+            background: #1d4ed8;
+        }
+
         .container {
             max-width: 1150px;
             margin: 30px auto;
@@ -81,7 +85,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 650px;
+            min-width: 750px;
         }
 
         th, td {
@@ -177,6 +181,21 @@
             color: #64748b;
             padding: 25px;
         }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 16px;
+            }
+
+            .container {
+                padding: 0 12px;
+                margin-top: 20px;
+            }
+
+            .card {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 
@@ -209,6 +228,7 @@
         @if($errors->any())
             <div class="alert error">
                 <strong>Terjadi kesalahan:</strong>
+
                 <ul>
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
@@ -219,26 +239,25 @@
 
         <!-- INFORMASI DENDA -->
         <div class="fine-info">
-
             <h3>⚠️ Informasi Denda Keterlambatan</h3>
 
             <p>
                 Pengembalian alat yang melewati tanggal jatuh tempo
                 akan dikenakan denda sebesar
-                <strong>Rp10.000 per unit per hari</strong>.
+                <strong>Rp10.000 per hari</strong>.
             </p>
 
             <p>
                 Contoh: Meminjam 2 unit alat dan terlambat 3 hari,
                 maka total denda adalah
-                <strong>Rp60.000</strong>.
+                <strong>Rp30.000</strong>.
             </p>
 
             <p>
                 Denda dihitung secara otomatis oleh sistem
                 ketika peminjam mengajukan pengembalian.
+                Jumlah unit alat tidak memengaruhi besarnya denda.
             </p>
-
         </div>
 
         <!-- DAFTAR ALAT YANG BELUM DIKEMBALIKAN -->
@@ -259,7 +278,9 @@
 
                 <div class="form-card">
 
-                    <h3>{{ $peminjaman->alat->nama_alat ?? 'Alat tidak ditemukan' }}</h3>
+                    <h3>
+                        {{ $peminjaman->alat->nama_alat ?? 'Alat tidak ditemukan' }}
+                    </h3>
 
                     <p>
                         <strong>Jumlah dipinjam:</strong>
@@ -390,7 +411,9 @@
                                 </td>
 
                                 <td>
-                                    <span class="badge">Dikembalikan</span>
+                                    <span class="badge">
+                                        Dikembalikan
+                                    </span>
                                 </td>
                             </tr>
 
